@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Payment24.Playwright.Framework.Configuration;
 using Payment24.Playwright.Framework.Core;
-using Payment24.Playwright.Framework.Pages;
 
 namespace Payment24.Playwright.Framework.Tests;
 
@@ -11,26 +9,13 @@ public class SmokeTest : BaseTest
     [TestMethod]
     public async Task Login_To_IMPL_Merchant()
     {
-        // Arrange
-        var loginPage = new LoginPage(Page);
+        await StartPortalSessionAsync("IMPL");
 
-        // Get merchant credentials from configuration
-        var user = TestUsers.GetUser("IMPL");
+        Assert.IsFalse(
+            Page.Url.Contains("Login.aspx"),
+            "Login failed. User is still on the Login page.");
 
-        // Navigate to the merchant login page
-        await loginPage.NavigateToLoginPageAsync(
-            $"https://admin-stage.payment24.co/login.aspx?code={user.MerchantCode}");
-
-        // Verify login page
-        Assert.IsTrue(await loginPage.IsLoginPageDisplayedAsync());
-
-        // Verify merchant logo
-        await loginPage.VerifyLogoAsync(user.Logo);
-
-        // Login
-        await loginPage.LoginAsync(user);
-
-        // TODO:
-        // Verify Dashboard
+        Console.WriteLine($"Logged in successfully.");
+        Console.WriteLine($"Current Page: {Page.Url}");
     }
 }

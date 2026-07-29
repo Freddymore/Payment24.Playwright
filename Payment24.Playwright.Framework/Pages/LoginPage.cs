@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Payment24.Playwright.Framework.Configuration;
 using Payment24.Playwright.Framework.Models;
 
 namespace Payment24.Playwright.Framework.Pages;
@@ -14,8 +15,8 @@ public class LoginPage : BasePage
     private const string PasswordTextBox = "#txtPassword";
     private const string LoginButton = "#BtnLogin";
 
-    // Matches all merchant logos (RUBELogo, TOTALLogo, IMPLLogo, etc.)
-    private const string MerchantLogo = "#imgHeader";
+    // Merchant Logo
+    private const string MerchantLogo = "img.tilt.p24img";
 
     public LoginPage(IPage page) : base(page)
     {
@@ -31,6 +32,33 @@ public class LoginPage : BasePage
     }
 
     // =========================
+    // Complete Login Workflow
+    // =========================
+
+    public async Task LoginToMerchantAsync(string merchant)
+    {
+        // Read merchant configuration
+        var user = TestUsers.GetUser(merchant);
+
+        // Navigate to merchant login page
+        await NavigateToLoginPageAsync(
+            $"{ConfigManager.Portal.BaseUrl}/Login.aspx?code={user.MerchantCode}");
+
+        // Verify login page
+        Assert.IsTrue(
+            await IsLoginPageDisplayedAsync(),
+            "Login page was not displayed.");
+
+        // Verify merchant branding
+        await VerifyLogoAsync(user.Logo);
+
+        // Perform login
+        await LoginAsync(user);
+
+        Console.WriteLine($"✔ Logged into merchant: {merchant}");
+    }
+
+    // =========================
     // Verification
     // =========================
 
@@ -41,21 +69,21 @@ public class LoginPage : BasePage
 
     public async Task VerifyLogoAsync(string expectedLogo)
     {
-        var logo = Page.Locator("img.tilt.p24img");
+        var logo = Page.Locator(MerchantLogo);
 
-        // Verify the image is visible
-        await Assertions.Expect(logo).ToBeVisibleAsync();
+        await logo.WaitForAsync();
 
-        // Get the src attribute
         var logoSource = await logo.GetAttributeAsync("src");
 
-        Assert.IsNotNull(logoSource, "Merchant logo src attribute is null.");
+        Assert.IsNotNull(
+            logoSource,
+            "Merchant logo src attribute is null.");
 
         Assert.IsTrue(
             logoSource.Contains(expectedLogo, StringComparison.OrdinalIgnoreCase),
             $"Expected logo '{expectedLogo}' but found '{logoSource}'.");
 
-        Console.WriteLine($"✔ Merchant logo verified successfully.");
+        Console.WriteLine("✔ Merchant logo verified successfully.");
         Console.WriteLine($"   Logo Source: {logoSource}");
     }
 
