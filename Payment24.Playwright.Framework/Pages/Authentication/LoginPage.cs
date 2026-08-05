@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Payment24.Playwright.Framework.Configuration;
 using Payment24.Playwright.Framework.Models;
 
-namespace Payment24.Playwright.Framework.Pages;
+namespace Payment24.Playwright.Framework.Pages.Authentication;
 
 public class LoginPage : BasePage
 {

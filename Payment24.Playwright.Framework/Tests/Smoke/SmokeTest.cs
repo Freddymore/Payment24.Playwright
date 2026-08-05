@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Payment24.Playwright.Framework.Core;
 
-namespace Payment24.Playwright.Framework.Tests;
+namespace Payment24.Playwright.Framework.Tests.Smoke;
 
 [TestClass]
 public class SmokeTest : BaseTest
