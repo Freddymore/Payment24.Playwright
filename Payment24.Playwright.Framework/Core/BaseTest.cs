@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Payment24.Playwright.Framework.Configuration;
 using Payment24.Playwright.Framework.Pages;
+using Payment24.Playwright.Framework.Pages.Authentication;
 
 namespace Payment24.Playwright.Framework.Core;
 

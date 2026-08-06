@@ -30,28 +30,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Pages\Components\" />
-	  <Folder Include="Pages\Dashboard\" />
-	  <Folder Include="Pages\Customers\" />
 	  <Folder Include="Pages\Merchants\" />
 	  <Folder Include="Pages\Marketing\" />
 	  <Folder Include="Pages\Campaigns\" />
 	  <Folder Include="Pages\Loyalty\" />
-	  <Folder Include="Pages\Technical Support\" />
+	  <Folder Include="Pages\TechnicalSupport\" />
 	  <Folder Include="Pages\Vouchers\" />
 	  <Folder Include="Pages\Settings\" />
 	  <Folder Include="Pages\Terminal\" />
 	  <Folder Include="Pages\Reports\" />
 	  <Folder Include="Pages\Transactions\" />
 	  <Folder Include="Tests\Campaigns\" />
-	  <Folder Include="Tests\Customers\" />
 	  <Folder Include="Tests\Dashboard\" />
 	  <Folder Include="Tests\Loyalty\" />
 	  <Folder Include="Tests\Marketing\" />
 	  <Folder Include="Tests\Merchants\" />
 	  <Folder Include="Tests\Settings\" />
 	  <Folder Include="Tests\Reports\" />
-	  <Folder Include="Tests\Technical Support\" />
+	  <Folder Include="Tests\TechnicalSupport\" />
 	  <Folder Include="Tests\Terminal\" />
 	  <Folder Include="Tests\Transactions\" />
 	  <Folder Include="Tests\Vouchers\" />

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using Payment24.Playwright.Framework.Configuration;
 using Payment24.Playwright.Framework.Helpers;
 
 namespace Payment24.Playwright.Framework.Pages;
@@ -14,23 +15,25 @@ public abstract class BasePage
         Wait = new WaitHelper(page);
     }
 
-    #region Navigation
+    // =====================================================
+    // Navigation
+    // =====================================================
 
     protected async Task NavigateToAsync(string url)
     {
+        if (!url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+        {
+            url = $"{ConfigManager.Portal.BaseUrl}{url}";
+        }
+
         await Page.GotoAsync(url);
-        await Wait.WaitForPageLoadAsync();
+
+        await WaitForPageLoadAsync();
     }
 
-    protected async Task RefreshPageAsync()
-    {
-        await Page.ReloadAsync();
-        await Wait.WaitForPageLoadAsync();
-    }
-
-    #endregion
-
-    #region Element Actions
+    // =====================================================
+    // Element Actions
+    // =====================================================
 
     protected async Task ClickAsync(string selector)
     {
@@ -44,13 +47,22 @@ public abstract class BasePage
 
     protected async Task ClearAndFillAsync(string selector, string text)
     {
-        await Page.Locator(selector).ClearAsync();
-        await Page.Locator(selector).FillAsync(text);
+        var locator = Page.Locator(selector);
+
+        await locator.ClearAsync();
+        await locator.FillAsync(text);
     }
 
-    protected async Task SelectDropdownAsync(string selector, string value)
+    /// <summary>
+    /// Selects a dropdown option using its visible text.
+    /// </summary>
+    protected async Task SelectByLabelAsync(string selector, string label)
     {
-        await Page.Locator(selector).SelectOptionAsync(value);
+        await Page.Locator(selector).SelectOptionAsync(
+            new SelectOptionValue
+            {
+                Label = label
+            });
     }
 
     protected async Task CheckCheckboxAsync(string selector)
@@ -63,9 +75,9 @@ public abstract class BasePage
         await Page.Locator(selector).UncheckAsync();
     }
 
-    #endregion
-
-    #region Get Information
+    // =====================================================
+    // Get Information
+    // =====================================================
 
     protected async Task<string> GetTextAsync(string selector)
     {
@@ -75,6 +87,11 @@ public abstract class BasePage
     protected async Task<string?> GetValueAsync(string selector)
     {
         return await Page.Locator(selector).InputValueAsync();
+    }
+
+    protected async Task<string?> GetAttributeAsync(string selector, string attribute)
+    {
+        return await Page.Locator(selector).GetAttributeAsync(attribute);
     }
 
     protected async Task<bool> IsVisibleAsync(string selector)
@@ -87,9 +104,24 @@ public abstract class BasePage
         return await Page.Locator(selector).IsEnabledAsync();
     }
 
-    #endregion
+    protected async Task<bool> IsCheckedAsync(string selector)
+    {
+        return await Page.Locator(selector).IsCheckedAsync();
+    }
 
-    #region Waits
+    protected async Task<bool> ExistsAsync(string selector)
+    {
+        return await Page.Locator(selector).CountAsync() > 0;
+    }
+
+    protected async Task<int> GetCountAsync(string selector)
+    {
+        return await Page.Locator(selector).CountAsync();
+    }
+
+    // =====================================================
+    // Waits
+    // =====================================================
 
     protected async Task WaitForElementAsync(string selector)
     {
@@ -106,18 +138,18 @@ public abstract class BasePage
         await Wait.WaitForPageLoadAsync();
     }
 
-    #endregion
+    protected async Task WaitForNetworkIdleAsync()
+    {
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+    }
 
-    #region Utilities
+    // =====================================================
+    // Utilities
+    // =====================================================
 
     protected async Task ScrollIntoViewAsync(string selector)
     {
         await Page.Locator(selector).ScrollIntoViewIfNeededAsync();
-    }
-
-    protected async Task PressKeyAsync(string selector, string key)
-    {
-        await Page.Locator(selector).PressAsync(key);
     }
 
     protected async Task HoverAsync(string selector)
@@ -125,9 +157,19 @@ public abstract class BasePage
         await Page.Locator(selector).HoverAsync();
     }
 
-    #endregion
+    protected async Task PressKeyAsync(string selector, string key)
+    {
+        await Page.Locator(selector).PressAsync(key);
+    }
 
-    #region Screenshots
+    protected async Task FocusAsync(string selector)
+    {
+        await Page.Locator(selector).FocusAsync();
+    }
+
+    // =====================================================
+    // Screenshots
+    // =====================================================
 
     protected async Task TakeScreenshotAsync(string fileName)
     {
@@ -139,6 +181,4 @@ public abstract class BasePage
             FullPage = true
         });
     }
-
-    #endregion
 }
