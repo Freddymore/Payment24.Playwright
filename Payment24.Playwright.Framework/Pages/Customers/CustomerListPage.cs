@@ -179,6 +179,51 @@ public class CustomerListPage : BasePage
         Console.WriteLine("✔ Search section verified.");
     }
 
+    // ============================================================
+    // SEARCH FLEET
+    // ============================================================
+
+    public async Task SearchFleetAsync(string fleetName)
+    {
+        await Page.Locator("#cphBody_txtFleetName")
+            .FillAsync(fleetName);
+
+        await Page.Locator("#cphBody_btnSearch")
+            .ClickAsync();
+
+        await Page.WaitForTimeoutAsync(3000);
+
+        Console.WriteLine(
+            $"Fleet search applied: {fleetName}");
+    }
+
+    // ============================================================
+    // OPEN LINK VEHICLES TO DRIVER
+    // ============================================================
+
+    public async Task ClickLinkVehiclesToDriverAsync()
+    {
+        var link = Page
+            .Locator("a[data-original-title='Link Vehicles to Driver']")
+            .First;
+
+        await link.WaitForAsync(
+            new LocatorWaitForOptions
+            {
+                State = WaitForSelectorState.Visible,
+                Timeout = 15000
+            });
+
+        await link.ScrollIntoViewIfNeededAsync();
+
+        await link.ClickAsync();
+
+        await Page.WaitForTimeoutAsync(3000);
+
+        Console.WriteLine(
+            "Link Vehicles to Driver link clicked.");
+    }
+
     // =====================================================
     // Buttons
     // =====================================================
